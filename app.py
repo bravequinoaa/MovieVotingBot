@@ -25,8 +25,11 @@ class App:
     def submitAddMovie(self, title: str = None, imdbID: str = None):
         # Adds a movie to the db or if already present, adds a vote
         movieInfo = self.__searchMovie(title, imdbID)
-        print(movieInfo)
         movie = self.dc.submit(movieInfo)
+
+        if movie == None: print(f"Failed to create movie: {title}")
+        else: print(f"Movie Created: {movie['Title']}")
+
         return movie
         # Then pass to discord bot
 
@@ -36,13 +39,18 @@ class App:
         # removes movie from user.votedMovies
         movie = self.dc.submitRemoveVote(title, imdbID)
         if movie == None:
-            print("Movie not found")
+            print(f"Movie not found: {title}")
             return
-        print("Vote removed")
+        print(f"Vote removed: {movie['Title']}: {movie['Votes']}")
 
     def removeMovie(self, title: str = None, imdbID: str = None):
         # Remove movie from db if done by owner or to be called when Movie.Votes = 0
-        pass
+        movie = self.dc.submitRemoveMovie(title=title, imdbID=imdbID)
+        if movie == None:
+            print(f"Movie Removed: {title}")
+            return
+        print(f"Unable to remove movie, votes still exists: {movie['Title']}")
+
 
     def __printMovies(self):
         self.pp.pprint(self.dc.getMovies())
@@ -61,14 +69,12 @@ class App:
         movie4 = self.submitAddMovie("House")
         self.submitRemoveVote(title="POOP")
         self.submitRemoveVote(title="Hereditary")
-
-    def __str__(self):
-        return "HELLO WORLD"
+        self.submitRemoveVote(title="Spy Kids")
+        self.removeMovie(title="Spy Kids")
 
 
 if __name__=="__main__":
     app = App()
-    print(app)
     app.test()
 
     

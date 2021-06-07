@@ -12,30 +12,22 @@ class DataController:
         connect(db='Movies', host=Host, port=Port)
 
     def submit(self, movieInfo: dict, voter=None):
-        if self.__findMovieDB(imdbID = movieInfo['imdbID']) == None:
+        if self.__findMovieByID(movieInfo['imdbID']) == None:
+            print("Creating")
             self.__createMovie(movieInfo)
 
         self.__incVote(movieInfo['imdbID'])
-        movie = self.__findMovieDB(imdbID = movieInfo['imdbID'])
+        movie = self.__findMovieByID(movieInfo['imdbID'])
         return movie
     
     def submitRemoveVote(self, title: str = None, imdbID: str = None):
-        movie = self.__findMovieDB(title, imdbID)
+        movie = self.__getMovieID(imdbID, title)
         if movie == None:
             return movie 
         imdbID = movie['imdbID']
+        print('imdbID: ', imdbID)
         self.__decVote(movie['imdbID'])
-        return self.__findMovieDB(imdbID=movie['imdbID'])
-
-    def submitRemoveMovie(self, title: str = None, imdbID: str = None):
-        movie = self.__findMovieDB(imdbID=imdbID, title=title)
-        if movie == None:
-            return movie
-        if movie['Votes'] != 0:
-            return movie 
-
-        self.__removeMovie(movie['imdbID'])
-        return None
+        return self.__findMovieByID(movie['imdbID'])
 
 
     def __createMovie(self, movieInfo: dict, voter: str = 'ADMIN') ->  Movie:
@@ -51,20 +43,35 @@ class DataController:
 
         return movie
 
+    def __getMovieID(self, imdbID: str = None, title: str = None):
+        movie = None
+        if imdbID != None:
+            movie = self.col.find( {'imdbID': imdbID}, {imdbID: 1} )
+        if title != None:
+            movie = self.col.find( {'Title': title}, {imdbID: 1} )
+        if movie.count() == 0:
+            return None
+        print("ID GOT")
+        print(movie.count())
+        return movie.next()       
+
     def __removeMovie(self, imdbID: str):
         # remove movie by ID
-        self.col.delete_one( {'imdbID': imdbID} )
+        self.col.delete( {'imdbID': imdbID} )
 
-    def __findMovieDB(self, title: str = None, imdbID: str = None):
+    def __findMovieByTitle(self, title: str):
         # return movie entry based on title
-        movie = None
-        if title != None:
-            movie = self.col.find({ 'Title': title })
-        if imdbID != None:
-            movie = self.col.find( {'imdbID': imdbID})
+        movie = self.col.find({ 'Title': title })
+        
         if movie.count() == 0: return None
+        else: return movie.next()
 
-        return movie.next()
+    def __findMovieByID(self, imdbID: str):
+        # return movie entry based on imdbID
+        movie = self.col.find({ 'imdbID': imdbID })
+        
+        if movie.count() == 0: return None
+        else: return movie.next()
 
     def __incVote(self, imdbID: str):
         # Incremement movie vote by 1 based on imdbID
