@@ -22,33 +22,40 @@ class MovieVotingSystem:
         # Supplementary
         self.pp = pprint.PrettyPrinter(indent=4)
 
-    def submitAddMovie(self, title: str = None, imdbID: str = None):
+    def submitAddMovie(self, ctx, title: str = None, imdbID: str = None):
         # Adds a movie to the db or if already present, adds a vote
         movieInfo = self.__searchMovie(title, imdbID)
-        movie = self.dc.submit(movieInfo)
+        movie = self.dc.submit(ctx, movieInfo)
 
-        if movie == None: print(f"Failed to create movie: {title}")
-        else: print(f"Movie Created: {movie['Title']}")
+        if movie == None: 
+            print(f"Failed to create movie: {title}")
+            return 1 
+        if movie == 1:
+            print(f"Movie already created/you have already voted for this movie: {title}")
+            return 2
 
+        print(f"Movie Created: {movie['Title']}")
         return movie
-        # Then pass to discord bot
 
-    def submitRemoveVote(self, title: str = None, imdbID: str = None):
+    def submitRemoveVote(self, ctx, title: str = None, imdbID: str = None):
         # Checks if user voted for a certain movie
         # removes vote from movie
         # removes movie from user.votedMovies
-        movie = self.dc.submitRemoveVote(title, imdbID)
-        if movie == None:
+        movie = self.dc.submitRemoveVote(ctx, title, imdbID)
+        if movie == 1:
             print(f"Movie not found: {title}")
-            return
-        print(f"Vote removed: {movie['Title']}: {movie['Votes']}")
+            return 1
+        if movie == 2:
+            print("{ctx.message.author} is not a voter on this movie")
+            return 2
+        return movie
 
-    def removeMovie(self, title: str = None, imdbID: str = None):
+    def removeMovie(self, ctx, title: str = None, imdbID: str = None):
         # Remove movie from db if done by owner or to be called when Movie.Votes = 0
-        movie = self.dc.submitRemoveMovie(title=title, imdbID=imdbID)
+        movie = self.dc.submitRemoveMovie(ctx, title=title, imdbID=imdbID)
         if movie == None:
             print(f"Movie Removed: {title}")
-            return
+            return 
         print(f"Unable to remove movie, votes still exists: {movie['Title']}")
 
 

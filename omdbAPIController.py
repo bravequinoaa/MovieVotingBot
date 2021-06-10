@@ -1,3 +1,4 @@
+import asyncio
 import requests
 from requests.exceptions import HTTPError
 import os
@@ -11,7 +12,6 @@ class omdbAPIController:
         request = self.__createRequests(title, imdbID)
         response = self.__sendRequests(request)
         cleanedJSON = self.__cleanJSON(response.json())
-        #print(cleanedJSON)
         return cleanedJSON 
 
     def __createRequests(self, title: str = None, imdbID: str = None):

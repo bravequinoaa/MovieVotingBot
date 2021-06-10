@@ -1,7 +1,7 @@
-import asyncio
 from discord.ext import commands
+from DiscordBot import BOT_PREFIX
 
-class Test(commands.Cog):
+class Test(commands.Cog, name="Test"):
     def __init__(self, bot):
         self.bot = bot
 
