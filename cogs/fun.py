@@ -6,7 +6,7 @@ class Fun(commands.Cog, name="Fun"):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name='roll', aliases=['r'])
+    @commands.command(name='random', aliases=['r', 'roll'])
     async def random(self, ctx):
         args = self.__parseargs(ctx.message.content)
         if len(args) == 0:
@@ -35,10 +35,10 @@ class Fun(commands.Cog, name="Fun"):
     @commands.command(name='meow', aliases=['Meow'])
     async def meow(self, ctx):
         meows = [ 'MEOW', 'meow', 'mrwowwww', 'moo', 'RRRRROWWWW']
-        r = randint(0, len(meows))
-        await ctx.messåge.channel.send(meows[r])
+        r = randint(0, len(meows)-1)
+        await ctx.message.channel.send(meows[r])
 
-    @command.comand(name='bark', aliases=['Woof', 'Bark'])
+    @commands.command(name='bark', aliases=['Woof', 'Bark'])
     async def bark(self, ctx):
         await ctx.message.channel.send('meow')
 

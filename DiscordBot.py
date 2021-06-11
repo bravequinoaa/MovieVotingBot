@@ -14,6 +14,8 @@ bot = Bot(command_prefix=BOT_PREFIX, intents=intents)
 
 mvs = MovieVotingSystem()
 
+bot.remove_command('help')
+
 @bot.event
 async def on_ready():
     print('We have logged in as {0.user}'.format(bot))
@@ -29,7 +31,7 @@ async def on_message(message):
 
 if __name__ == "__main__":
     # Load Cogs
-    cogs = ['test', 'MovieVoting', 'fun']
+    cogs = ['test', 'MovieVoting', 'fun', 'help']
     for cog in cogs:
         try:
             bot.load_extension(f"cogs.{cog}")

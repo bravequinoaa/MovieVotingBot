@@ -16,7 +16,7 @@ class DataController:
         if movie == None:
             movie = self.__createMovie(movieInfo, voter=ctx.message.author)
 
-        if self.__checkVoter(ctx.message.author, movie):
+        if not self.__checkVoter(ctx.message.author, movie):
             self.__incVote(ctx.message.author, movieInfo['imdbID'])
             return self.__findMovieDB(imdbID = movieInfo['imdbID'])
         else:
