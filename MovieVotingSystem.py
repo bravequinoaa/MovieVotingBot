@@ -46,17 +46,27 @@ class MovieVotingSystem:
             print(f"Movie not found: {title}")
             return 1
         if movie == 2:
-            print("{ctx.message.author} is not a voter on this movie")
+            print(f"{ctx.message.author} is not a voter on this movie")
             return 2
         return movie
 
     def removeMovie(self, ctx, title: str = None, imdbID: str = None):
         # Remove movie from db if done by owner or to be called when Movie.Votes = 0
         movie = self.dc.submitRemoveMovie(ctx, title=title, imdbID=imdbID)
-        if movie == None:
+        if movie == 0:
             print(f"Movie Removed: {title}")
-            return 
-        print(f"Unable to remove movie, votes still exists: {movie['Title']}")
+            return 0
+        if movie == 1:
+            print(f'Movie not found: {title}')
+            return 1
+        if movie == 2:
+            print(f'Movie still has votes: {title}')
+            return 2
+        if movie == 3:
+            print(f'Not movie creator: {title}, author: {ctx.message.author}')
+            return 3
+
+        print(f"Unable to remove movie, votes still exists: {title}")
 
 
     def __printMovies(self):

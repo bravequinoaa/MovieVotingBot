@@ -29,7 +29,7 @@ async def on_message(message):
 
 if __name__ == "__main__":
     # Load Cogs
-    cogs = ['test', 'MovieVoting']
+    cogs = ['test', 'MovieVoting', 'fun']
     for cog in cogs:
         try:
             bot.load_extension(f"cogs.{cog}")

@@ -39,9 +39,16 @@ class MovieVoting(commands.Cog, name="MovieVoting"):
     @commands.command(name="removemovie", aliases=['movieremove', 'rm'])
     async def removeMovie(self, ctx):
         arg = self.__parseArgs(ctx.message.content)
-        movie = self.mvs.submitRemoveMovie(ctx, title=arg)
+        movie = self.mvs.removeMovie(ctx, title=arg)
 
-
+        if movie == 0:
+            await ctx.message.channel.send(f"Movie removed: {arg}")
+        if movie == 1:
+            await ctx.message.channel.send(f"Movie not found: {arg}")
+        if movie == 2:
+            await ctx.message.channel.send(f"Movie still has votes: {arg}")
+        if movie == 3:
+            await ctx.message.channel.send(f"You are not the creator of movie: {arg}")
 
     @commands.command(name="top", aliases=['topmovies', 't'])
     async def top(self, ctx):
@@ -55,6 +62,10 @@ class MovieVoting(commands.Cog, name="MovieVoting"):
     async def userMovies(self, ctx):
         pass
 
+    @commands.command(name="info", aliases=['i'])
+    async def info(self, ctx):
+        pass
+
     @commands.command(name="printinfo")
     async def printinfo(self, ctx):
         print(ctx.message.content)
@@ -65,7 +76,6 @@ class MovieVoting(commands.Cog, name="MovieVoting"):
 
     def __parseArgs(self, content):
         c = content.split(" ")[1:]
-        print(c)
         return ' '.join(c)
 
 def setup(bot):

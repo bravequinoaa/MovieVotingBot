@@ -38,9 +38,11 @@ class DataController:
             return 1
         if movie['Votes'] != 0:
             return 2 
+        if movie['Creator'] != str(ctx.message.author):
+            return 3
 
         self.__removeMovie(movie['imdbID'])
-        return None
+        return 0 
 
     def __createMovie(self, movieInfo: dict, voter: str = 'ADMIN') ->  Movie:
         movie = Movie()
@@ -60,7 +62,7 @@ class DataController:
         self.movieCol.delete_one( {'imdbID': imdbID} )
 
     def __findMovieDB(self, title: str = None, imdbID: str = None):
-        # return movie entry based on title
+        # return movie entry based on title or imdbID
         movie = None
         if title != None:
             movie = self.movieCol.find({ 'Title': title })
