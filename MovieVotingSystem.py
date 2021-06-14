@@ -66,8 +66,12 @@ class MovieVotingSystem:
             print(f'Not movie creator: {title}, author: {ctx.message.author}')
             return 3
 
-        print(f"Unable to remove movie, votes still exists: {title}")
-
+    def searchMovie(self, title: str = None, imdbID: str = None):
+        movie = self.dc.findMovieDB(title=title)
+        if movie == None:
+            movie = self.omdb.getMovie(title)
+        print(movie)
+        return movie
 
     def __printMovies(self):
         self.pp.pprint(self.dc.getMovies())
@@ -89,9 +93,3 @@ class MovieVotingSystem:
         self.submitRemoveVote(title="Spy Kids")
         self.removeMovie(title="Spy Kids")
 
-
-if __name__=="__main__":
-    mvs = MovieVotingSystem()
-    mvs.test()
-
-    

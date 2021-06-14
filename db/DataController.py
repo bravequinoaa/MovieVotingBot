@@ -12,28 +12,28 @@ class DataController:
         connect(db='Movies', host=Host, port=Port)
 
     def submit(self, ctx, movieInfo: dict, voter=None):
-        movie = self.__findMovieDB(imdbID = movieInfo['imdbID'])
+        movie = self.findMovieDB(imdbID = movieInfo['imdbID'])
         if movie == None:
             movie = self.__createMovie(movieInfo, voter=ctx.message.author)
 
         if not self.__checkVoter(ctx.message.author, movie):
             self.__incVote(ctx.message.author, movieInfo['imdbID'])
-            return self.__findMovieDB(imdbID = movieInfo['imdbID'])
+            return self.findMovieDB(imdbID = movieInfo['imdbID'])
         else:
             return 1
     
     def submitRemoveVote(self, ctx, title: str = None, imdbID: str = None):
-        movie = self.__findMovieDB(title, imdbID)
+        movie = self.findMovieDB(title, imdbID)
         if movie == None:
             return movie 
         if not self.__checkVoter(ctx.message.author, movie):
             imdbID = movie['imdbID']
             self.__decVote(ctx.message.author, movie['imdbID'])
-            return self.__findMovieDB(imdbID=movie['imdbID'])
+            return self.findMovieDB(imdbID=movie['imdbID'])
         return 1
 
     def submitRemoveMovie(self, ctx, title: str = None, imdbID: str = None):
-        movie = self.__findMovieDB(imdbID=imdbID, title=title)
+        movie = self.findMovieDB(imdbID=imdbID, title=title)
         if movie == None:
             return 1
         if movie['Votes'] != 0:
@@ -57,11 +57,7 @@ class DataController:
 
         return movie
 
-    def __removeMovie(self, imdbID: str):
-        # remove movie by ID
-        self.movieCol.delete_one( {'imdbID': imdbID} )
-
-    def __findMovieDB(self, title: str = None, imdbID: str = None):
+    def findMovieDB(self, title: str = None, imdbID: str = None):
         # return movie entry based on title or imdbID
         movie = None
         if title != None:
@@ -71,6 +67,10 @@ class DataController:
         if movie.count() == 0: return None
 
         return movie.next()
+
+    def __removeMovie(self, imdbID: str):
+        # remove movie by ID
+        self.movieCol.delete_one( {'imdbID': imdbID} )
 
     def __incVote(self, author, imdbID: str):
         # Incremement movie vote by 1 based on imdbID
@@ -87,7 +87,6 @@ class DataController:
             return True
         else: return False
         
-
     def getTopMovies(self):
         # need to limit to unique movies
         returnarr = []

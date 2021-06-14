@@ -56,12 +56,3 @@ class omdbAPIController:
         genrearr = genres.replace(' ', '').split(',')
         return genrearr
 
-
-if __name__=="__main__":
-    controller = omdbAPIController()
-    res = controller.getMovie(title='Shrek')
-    print(res)
-
-    
-
-

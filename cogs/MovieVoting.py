@@ -64,7 +64,16 @@ class MovieVoting(commands.Cog, name="MovieVoting"):
 
     @commands.command(name="info", aliases=['i'])
     async def info(self, ctx):
-        pass
+        arg = self.__parseArgs(ctx.message.content)
+        movie = self.mvs.searchMovie(title=arg)
+        if movie == None:
+            await ctx.message.channel.send(f"Movie not found: {arg}")
+        else:
+            await ctx.message.channel.send( f"""Movie: {movie['Title']}
+Genres: {movie['Genre']}
+Runtime: {movie['Runtime']}
+Rated: {movie['Rated']}
+Link: https://www.imdb.com/title/{movie['imdbID']}""")
 
     @commands.command(name="printinfo")
     async def printinfo(self, ctx):

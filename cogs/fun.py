@@ -1,4 +1,6 @@
 from discord.ext import commands
+from discord.utils import get
+
 from DiscordBot import BOT_PREFIX
 from random import randint
 
@@ -41,6 +43,16 @@ class Fun(commands.Cog, name="Fun"):
     @commands.command(name='bark', aliases=['Woof', 'Bark'])
     async def bark(self, ctx):
         await ctx.message.channel.send('meow')
+        
+    @commands.command(name='votekick')
+    async def votekick(self, ctx):
+        arg = self.__parseargs(ctx.message.content)
+        arg = ''.join(arg)
+        reactions = ['F1', 'F2']
+        message = await ctx.message.channel.send(f'Vote Kick: {arg}')
+        for r in reactions:
+            emoji = get(ctx.guild.emojis, name=r)
+            await message.add_reaction(emoji)
 
     def __parseargs(self, content):
         return content.split(' ')[1:]
